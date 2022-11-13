@@ -37,6 +37,9 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model User {
@@ -45,9 +48,12 @@ model User {
   email               String?               @unique
   emailVerified       DateTime?
   image               String?
+  createdAt            DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  password      String
   accounts            Account[]
   sessions            Session[]
-  UserPlaceConnection UserPlaceConnection[]
+  userPlaceConnections UserPlaceConnection[]
 }
 
 model VerificationToken {

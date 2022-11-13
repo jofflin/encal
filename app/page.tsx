@@ -1,8 +1,7 @@
-export default function Home() {
-  return (
+import { unstable_getServerSession } from 'next-auth'
 
-      <h1 className="text-3xl font-light">
-        Hello world!
-      </h1>
-  )
+export default async function Home() {
+  const session = await unstable_getServerSession()
+  console.log(session)
+  return <h1 className="text-3xl font-light">Home</h1>
 }
