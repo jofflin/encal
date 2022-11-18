@@ -3,11 +3,15 @@
 // Path: components/navigation.tsx
 
 import { unstable_getServerSession } from 'next-auth'
-import { BiCog, BiHome, BiPieChart, BiUser } from 'react-icons/bi'
+import { BiBarChart, BiCog, BiListUl, BiUser } from 'react-icons/bi'
 import Link from 'next/link'
 
 export default function Navigation() {
   const session = unstable_getServerSession()
+
+  if (!session) {
+    return null
+  }
 
   // Create bottom navigation menu with Home, Insights, Profile, Settings, and Logout
   return (
@@ -18,29 +22,25 @@ export default function Navigation() {
             href="/"
             className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-none"
           >
-            <BiHome className="h-5 w-5" />
-            <span className="ml-2">Home</span>
+            <BiBarChart className="h-8 w-8" />
           </Link>
           <Link
-            href="/insights"
+            href="/configuration"
             className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-none"
           >
-            <BiPieChart className="h-5 w-5" />
-            <span className="ml-2">Insights</span>
-          </Link>
-          <Link
-            href="/profile"
-            className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-none"
-          >
-            <BiUser className="h-5 w-5" />
-            <span className="ml-2">Profile</span>
+            <BiListUl className="h-8 w-8" />
           </Link>
           <Link
             href="/settings"
             className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-none"
           >
-            <BiCog className="h-5 w-5" />
-            <span className="ml-2">Settings</span>
+            <BiCog className="h-8 w-8" />
+          </Link>
+          <Link
+            href="/profile"
+            className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-none"
+          >
+            <BiUser className="h-8 w-8" />
           </Link>
         </div>
       </div>

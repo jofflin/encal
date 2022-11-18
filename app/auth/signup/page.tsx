@@ -1,9 +1,10 @@
 'use client'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { logger } from '@lib/logger'
 import { useRouter } from 'next/navigation'
 import { BiHide, BiLockAlt, BiShow } from 'react-icons/bi'
+import Link from 'next/link'
 
 export default function SignupCard() {
   const router = useRouter()
@@ -20,7 +21,7 @@ export default function SignupCard() {
   async function onSubmit(values: any) {
     try {
       // check if passwords match
-      if (values.password !== values.passwordConfirm) {
+      if (values.password !== values.confirmPassword) {
         throw new Error('Passwords do not match')
       }
       const body = { ...values }
@@ -40,20 +41,17 @@ export default function SignupCard() {
 
   // Sign Up Page with Name, Mail, Password, and Confirm Password
   return (
-    <div className="flex min-h-screen flex-col py-2 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md border-0 bg-white px-4 py-8 shadow-lg sm:rounded-3xl">
+    <div className="centered-card">
+      <div className="centered-card-content">
         <div className="flex flex-col items-center justify-center">
-          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white">
+          <div className="centered-card-icon">
             <BiLockAlt className="h-6 w-6" />
           </div>
-          <h1 className="mb-8 text-2xl font-semibold text-gray-900">Sign Up</h1>
+          <h1 className="centered-card-header">Sign Up</h1>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
+        <form className="form-design" onSubmit={handleSubmit(onSubmit)}>
+          <div className="form-section">
+            <label htmlFor="name" className="input-label">
               Name
             </label>
             <div className="mt-1">
@@ -63,7 +61,7 @@ export default function SignupCard() {
                 {...register('name', {
                   required: 'Name is required',
                 })}
-                className="block w-full rounded-md border-gray-300 py-1 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="input-field"
               />
             </div>
             {errors.name && (
@@ -72,11 +70,8 @@ export default function SignupCard() {
               </p>
             )}
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+          <div className="form-section">
+            <label htmlFor="email" className="input-label">
               Email address
             </label>
             <div className="mt-1">
@@ -86,7 +81,7 @@ export default function SignupCard() {
                 {...register('email', {
                   required: 'Email is required',
                 })}
-                className="block w-full rounded-md border-gray-300 py-1 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="input-field"
               />
             </div>
             {errors.email && (
@@ -95,11 +90,8 @@ export default function SignupCard() {
               </p>
             )}
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+          <div className="form-section">
+            <label htmlFor="password" className="input-label">
               Password
             </label>
             <div className="relative mt-1 rounded-md shadow-sm">
@@ -109,7 +101,7 @@ export default function SignupCard() {
                 {...register('password', {
                   required: 'Password is required',
                 })}
-                className="block w-full rounded-md border-gray-300 py-1 pr-10 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="input-field"
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
                 <button
@@ -131,11 +123,8 @@ export default function SignupCard() {
               </p>
             )}
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
+          <div className="form-section">
+            <label htmlFor="confirmPassword" className="input-label">
               Confirm Password
             </label>
             <div className="relative mt-1 rounded-md shadow-sm">
@@ -150,7 +139,7 @@ export default function SignupCard() {
                   },
                   required: 'Confirm Password is required',
                 })}
-                className="block w-full rounded-md border-gray-300 py-1 pr-10 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="input-field"
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
                 <button
@@ -172,37 +161,21 @@ export default function SignupCard() {
               </p>
             )}
           </div>
-          <div className="mb-4">
+          <div className="form-section">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex w-full justify-center rounded-md border border-transparent bg-blue-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="submit-button"
             >
-              Sign Up
-              {/*  SPinner if is submitting*/}
-              {isSubmitting && (
-                <svg
-                  className="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v1a7 7 0 00-7 7h1z"
-                  ></path>
-                </svg>
-              )}
+              {isSubmitting ? 'Loading...' : 'Sign Up'}
             </button>
+          </div>
+          <div className="form-section">
+            <Link href="/auth/signin">
+              <button className="cancel-button">
+                Already have an account? Sign In
+              </button>
+            </Link>
           </div>
         </form>
       </div>

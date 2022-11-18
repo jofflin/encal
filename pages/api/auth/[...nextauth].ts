@@ -84,31 +84,31 @@ const options: NextAuthOptions = {
     //   }
     //   // return Promise.resolve(url.startsWith(baseUrl) ? url : baseUrl);
     // },
+    // Getting the JWT token from API response
+    jwt: async ({ token, user, account, profile, isNewUser }) => {
+      // logger.debug(`jwt:token`, token, '\n\n')
+      // logger.debug(`jwt:user`, user, '\n\n')
+      // logger.debug(`jwt:accountcount`, account, '\n\n')
+      const isSigningIn = !!user
+      if (isSigningIn) {
+        // token.jwt = user.access_token;
+        token.user = user
+      } else {
+        logger.debug(`jwt:isSignIn: user is not logged in`, '\n\n')
+      }
+      logger.debug(`resolving token`, token, '\n\n')
+      return Promise.resolve(token)
+    },
+    session: async ({ session, token }) => {
+      // logger.debug(`session:session`, session, '\n\n')
+      // logger.debug(`session:token`, token, '\n\n')
+      // session.jwt = token.jwt;
+      // @ts-ignore
+      session.user = token.user
+      logger.debug(`resolving session`, session, '\n\n')
+      return Promise.resolve(session)
+    },
   },
-  //   // Getting the JWT token from API response
-  //   jwt: async ({ token, user, account, profile, isNewUser }) => {
-  //     logger.debug(`jwt:token`, token, "\n\n");
-  //     logger.debug(`jwt:user`, user, "\n\n");
-  //     logger.debug(`jwt:account`, account, "\n\n");
-  //     const isSigningIn = user ? true : false;
-  //     if (isSigningIn) {
-  //       token.jwt = user.access_token;
-  //       token.user = user;
-  //     } else {
-  //       logger.debug(`jwt:isSignIn: user is not logged in`, "\n\n");
-  //     }
-  //     logger.debug(`resolving token`, token, "\n\n");
-  //     return Promise.resolve(token);
-  //   },
-  //   session: async ({ session, token }) => {
-  //     logger.debug(`session:session`, session, "\n\n");
-  //     logger.debug(`session:token`, token, "\n\n");
-  //     session.jwt = token.jwt;
-  //     session.user = token.user;
-  //     logger.debug(`resolving session`, session, "\n\n");
-  //     return Promise.resolve(session);
-  //   },
-  // },
   // // session
   // session: {
   //   // Choose how you want to save the user session.

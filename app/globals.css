@@ -29,3 +29,54 @@ a {
 /*        background: black;*/
 /*    }*/
 /*}*/
+
+@layer base {
+
+    .input-field {
+        @apply w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
+    }
+
+    .submit-button {
+        @apply w-full rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50;
+    }
+
+    .cancel-button {
+        @apply w-full rounded-md bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-50;
+    }
+
+    .error-text {
+        @apply text-red-500 text-sm;
+    }
+
+    .input-label {
+        @apply text-sm font-medium text-gray-700;
+    }
+
+    .form-design {
+        @apply flex w-full flex-col space-y-4;
+    }
+
+    .form-section {
+        @apply flex flex-col space-y-3;
+    }
+
+    .centered-card {
+        @apply mx-2 -mt-24 flex min-h-screen flex-col items-center justify-center py-2 sm:px-6 lg:px-8;
+    }
+
+    .centered-card-content {
+        @apply flex w-full max-w-md flex-col items-center justify-center space-y-4 rounded-md border border-gray-300 bg-white px-4 py-6 shadow-md;
+    }
+
+    .centered-card-header {
+        @apply text-2xl font-bold text-gray-700;
+    }
+
+    .centered-card-icon {
+        @apply mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white;
+    }
+
+    .simple-link {
+        @apply text-sm font-medium text-blue-500 transition duration-150 ease-in-out hover:text-blue-700;
+    }
+}

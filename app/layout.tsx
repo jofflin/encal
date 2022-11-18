@@ -3,6 +3,7 @@ import React from 'react'
 import { Providers } from './providers'
 import { unstable_getServerSession } from 'next-auth'
 import Navigation from '@components/navigation'
+import Header from '@components/header'
 
 export default async function RootLayout({
   children,
@@ -19,7 +20,11 @@ export default async function RootLayout({
       */}
       <head />
       <body>
-        <Providers session={session}>{children}</Providers>
+        <Providers session={session}>
+          <Header />
+
+          {children}
+        </Providers>
         <Navigation />
       </body>
     </html>

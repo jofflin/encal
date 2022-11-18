@@ -122,7 +122,7 @@ model UserPlaceConnection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isOwner   Boolean
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [email])
   userId    String
   place     Place    @relation(fields: [placeId], references: [id])
   placeId   String
