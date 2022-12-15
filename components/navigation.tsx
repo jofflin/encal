@@ -6,10 +6,18 @@ import { unstable_getServerSession } from 'next-auth'
 import { BiBarChart, BiCog, BiListUl, BiUser } from 'react-icons/bi'
 import Link from 'next/link'
 
-export default function Navigation() {
-  const session = unstable_getServerSession()
+export default async function Navigation() {
+  const session = await unstable_getServerSession()
+  // change color when active
+  // const isActive = (route: string) => {
+  // if (route === router.pathname) {
+  //   return 'text-teal-500'
+  // } else {
+  //   return 'text-gray-500'
+  // }
+  // }
 
-  if (!session) {
+  if (!session?.user?.email) {
     return null
   }
 

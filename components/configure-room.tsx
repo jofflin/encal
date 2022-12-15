@@ -21,6 +21,7 @@ export default function ConfigureRoom({ room, placeId }: Props) {
     watch,
     formState: { errors, isSubmitting },
   } = useForm()
+  const baseRoute = `/configuration/${placeId}`
 
   async function onSubmit(values: any) {
     try {
@@ -41,7 +42,7 @@ export default function ConfigureRoom({ room, placeId }: Props) {
         }).then((res) => res.json())
       }
       logger.debug(`res`, res)
-      router.push(`/configuration/room/${res.id}`)
+      router.push(`${baseRoute}/${res.id}`)
     } catch (error) {
       console.error(error)
     }
@@ -76,7 +77,7 @@ export default function ConfigureRoom({ room, placeId }: Props) {
             {isSubmitting ? 'Loading...' : 'Submit'}
           </button>
           {/* Create cancel link with href*/}
-          <Link href={`/configuration/place/${placeId}`}>
+          <Link href={baseRoute}>
             <button className="cancel-button" disabled={isSubmitting}>
               Cancel
             </button>

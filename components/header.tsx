@@ -1,10 +1,8 @@
-'use client'
-
-import { useSession } from 'next-auth/react'
 import { BiHome } from 'react-icons/bi'
+import { unstable_getServerSession } from 'next-auth'
 
-export default function Header() {
-  const session = useSession()
+export default async function Header() {
+  const session = await unstable_getServerSession()
   // return header with text on the left and icon on the right
 
   if (!session) {
@@ -12,8 +10,8 @@ export default function Header() {
   }
 
   return (
-    <header className="flex items-center justify-between bg-gray-800 p-4 text-gray-400 ">
-      <h1 className="text-3xl font-light">Hi {session.data?.user?.name}</h1>
+    <header className="flex items-center justify-between bg-teal-800 p-4 text-gray-100 ">
+      <h1 className="text-3xl font-light">Hi {session?.user?.name}</h1>
       <div className="flex items-center">
         <BiHome className="h-8 w-8" />
       </div>

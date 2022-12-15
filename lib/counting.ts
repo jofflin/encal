@@ -25,3 +25,26 @@ export async function countPlacesForUser(userId: string): Promise<any> {
 
   return devices
 }
+
+export async function countDevicesForRoom(roomId: string): Promise<number> {
+  return await prisma.device.count({
+    where: { roomId: roomId },
+  })
+}
+
+export async function countDevicesAndRoomsForPlace(
+  placeId: string
+): Promise<{ devicesAmount: number; roomsAmount: number }> {
+  // get all rooms for the place
+  const rooms = await prisma.room.findMany({
+    where: { placeId },
+    select: { id: true },
+  })
+
+  // get all devices for each room
+  const devicesAmount = await prisma.device.count({
+    where: { roomId: { in: rooms.map((room) => room.id) } },
+  })
+
+  return { devicesAmount, roomsAmount: rooms.length }
+}

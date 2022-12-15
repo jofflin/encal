@@ -47,7 +47,7 @@ export default function SignupCard() {
           <div className="centered-card-icon">
             <BiLockAlt className="h-6 w-6" />
           </div>
-          <h1 className="centered-card-header">Sign Up</h1>
+          <h1 className="centered-card-header text-teal-600">Sign Up</h1>
         </div>
         <form className="form-design" onSubmit={handleSubmit(onSubmit)}>
           <div className="form-section">
@@ -107,7 +107,7 @@ export default function SignupCard() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="py-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="py-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2"
                 >
                   {showPassword ? (
                     <BiHide className="h-6 w-6" />
@@ -145,7 +145,7 @@ export default function SignupCard() {
                 <button
                   type="button"
                   onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                  className={`text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+                  className={`text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2`}
                 >
                   {showPasswordConfirm ? (
                     <BiHide className="h-6 w-6" />

@@ -1,0 +1,10 @@
+{
+  "name": "EnCal",
+  "short_name": "EnCal",
+  "display": "standalone",
+  "start_url": "https://encal.home.hoefflin.io",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#99ddcc",
+  "description": "EnCal - House Power Monitoring"
+}

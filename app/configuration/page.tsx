@@ -3,9 +3,17 @@ import PageHeading from '@components/page-heading'
 import Link from 'next/link'
 import { getMyPlaces } from '@lib/place'
 import ListElementEmpty from '@components/list-element-empty'
+import { countDevicesAndRoomsForPlace } from '@lib/counting'
 
 export default async function PlaceList() {
   const places = await getMyPlaces()
+
+  const amounts: { devicesAmount: number; roomsAmount: number }[] = []
+
+  for (const place of places) {
+    const amount = await countDevicesAndRoomsForPlace(place.id)
+    amounts.push(amount)
+  }
 
   return (
     <div>
@@ -16,25 +24,24 @@ export default async function PlaceList() {
           <ListElement
             key={index}
             header={place.name}
-            subheader={place.basePrice + 'Euro / month'}
-            note={place.kwhPrice + 'Euro / kwh'}
-            editLink={`configuration/place/edit?id=${place.id}`}
-            detailLink={`configuration/place/${place.id}`}
+            subheader={`${place.basePrice}€/month & ${
+              place.kwhPrice / 100
+            }€/kwh`}
+            note={`${amounts[index].roomsAmount} rooms & ${amounts[index].devicesAmount} devices`}
+            editLink={`configuration/edit?id=${place.id}`}
+            detailLink={`configuration/${place.id}`}
           />
         )
       })}
-      {/*add ListElementEmpty if places length is zero*/}
+      {/*device ListElementEmpty if places length is zero*/}
       {places.length === 0 && (
         <ListElementEmpty
           header="No places yet"
           subheader="Add a place to get started"
         />
       )}
-      {/*  Create add button that is centered*/}
-      <Link
-        href={`configuration/place/edit`}
-        className="flex justify-center px-1"
-      >
+      {/*  Create device button that is centered*/}
+      <Link href={`configuration/edit`} className="flex justify-center px-1">
         <button className="submit-button">New Place</button>
       </Link>
     </div>

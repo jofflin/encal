@@ -24,8 +24,8 @@ export default async function RootLayout({
           <Header />
 
           {children}
+          <Navigation />
         </Providers>
-        <Navigation />
       </body>
     </html>
   )

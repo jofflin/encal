@@ -4,19 +4,21 @@ import { getDeviceById } from '@lib/device'
 
 type Props = {
   params: {
-    id: string
+    placeId: string
+    roomId: string
+    deviceId: string
   }
 }
 
 export default async function DeviceDetails({ params }: Props) {
-  const device: Device = await getDeviceById(params.id)
+  const device: Device = await getDeviceById(params.deviceId)
 
   return (
     <div>
       {/*Create heading with title*/}
       <PageHeading
         title={device.name}
-        backLink={`/configuration/room/${device.roomId}`}
+        backLink={`/configuration/${params.placeId}/${params.roomId}`}
       />
     </div>
   )

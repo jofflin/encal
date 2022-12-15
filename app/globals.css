@@ -32,16 +32,17 @@ a {
 
 @layer base {
 
+
     .input-field {
-        @apply w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
+        @apply w-full rounded-md border border-gray-300 px-4 py-2 focus:border-teal-600 focus:outline-none focus:ring-1 focus:ring-teal-600;
     }
 
     .submit-button {
-        @apply w-full rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50;
+        @apply w-full rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 focus:ring-offset-gray-50;
     }
 
     .cancel-button {
-        @apply w-full rounded-md bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-50;
+        @apply w-full rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-50;
     }
 
     .error-text {
@@ -61,7 +62,8 @@ a {
     }
 
     .centered-card {
-        @apply mx-2 -mt-24 flex min-h-screen flex-col items-center justify-center py-2 sm:px-6 lg:px-8;
+        @apply flex flex-col items-center justify-center min-h-screen py-2 sm:px-6 lg:px-8 mx-2;
+        /*@apply mx-2 -mt-24 flex min-h-screen flex-col items-center justify-center py-2 sm:px-6 lg:px-8;*/
     }
 
     .centered-card-content {
@@ -73,10 +75,10 @@ a {
     }
 
     .centered-card-icon {
-        @apply mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white;
+        @apply mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-white;
     }
 
     .simple-link {
-        @apply text-sm font-medium text-blue-500 transition duration-150 ease-in-out hover:text-blue-700;
+        @apply text-sm font-medium text-teal-600 transition duration-150 ease-in-out hover:text-teal-700;
     }
 }

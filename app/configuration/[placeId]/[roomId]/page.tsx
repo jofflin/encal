@@ -8,18 +8,23 @@ import ListElementEmpty from '@components/list-element-empty'
 
 type Props = {
   params: {
-    id: string
+    placeId: string
+    roomId: string
   }
 }
 
 export default async function RoomDetails({ params }: Props) {
-  const devices: Device[] = await getDevicesForRoom(params.id)
-  const room: Room = await getRoomById(params.id)
+  const devices: Device[] = await getDevicesForRoom(params.roomId)
+  const room: Room = await getRoomById(params.roomId)
+  const defaultRoute = `/configuration/${params.placeId}/${params.roomId}`
 
   return (
     <div>
       {/*Create heading with title*/}
-      <PageHeading title={room.name} />
+      <PageHeading
+        title={room.name}
+        backLink={`/configuration/${params.placeId}`}
+      />
       {devices.map((device, index) => {
         return (
           <ListElement
@@ -27,24 +32,21 @@ export default async function RoomDetails({ params }: Props) {
             header={device.name}
             subheader={'TODO Consumption'}
             note={'TODO Percent'}
-            editLink={`configuration/device/edit?deviceId=${device.id}&roomId=${room.id}`}
-            detailLink={`configuration/device/${device.id}`}
+            editLink={`${defaultRoute}/edit?deviceId=${device.id}`}
+            detailLink={`${defaultRoute}/${device.id}`}
           />
         )
       })}
 
-      {/*add ListElementEmpty if rooms length is zero*/}
+      {/*device ListElementEmpty if rooms length is zero*/}
       {devices.length === 0 && (
         <ListElementEmpty
           header="No devices yet"
           subheader="Add a device to get started"
         />
       )}
-      {/*  Create add button that is centered*/}
-      <Link
-        href={`configuration/device/edit?roomId=${room.id}`}
-        className="flex justify-center px-1"
-      >
+      {/*  Create device button that is centered*/}
+      <Link href={`${defaultRoute}/edit`} className="flex justify-center px-1">
         <button className="submit-button">New Device</button>
       </Link>
     </div>

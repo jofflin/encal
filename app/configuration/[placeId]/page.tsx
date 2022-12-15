@@ -5,16 +5,24 @@ import { getPlaceById } from '@lib/place'
 import { getRoomsForPlace } from '@lib/room'
 import { Place, Room } from '@prisma/client'
 import ListElementEmpty from '@components/list-element-empty'
+import { countDevicesForRoom } from '@lib/counting'
 
 type Props = {
   params: {
-    id: string
+    placeId: string
   }
 }
 
 export default async function PlaceDetails({ params }: Props) {
-  const rooms: Room[] = await getRoomsForPlace(params.id)
-  const place: Place = await getPlaceById(params.id)
+  const rooms: Room[] = await getRoomsForPlace(params.placeId)
+  const place: Place = await getPlaceById(params.placeId)
+  const amounts: number[] = []
+  const baseRoute = `/configuration/${params.placeId}`
+
+  for (const room of rooms) {
+    const amount = await countDevicesForRoom(room.id)
+    amounts.push(amount)
+  }
 
   return (
     <div>
@@ -25,25 +33,22 @@ export default async function PlaceDetails({ params }: Props) {
           <ListElement
             key={index}
             header={room.name}
-            subheader={'TODO Devices'}
+            subheader={amounts[index] + ' devices'}
             note={'TODO Percent'}
-            editLink={`configuration/room/edit?roomId=${room.id}&placeId=${place.id}`}
-            detailLink={`configuration/room/${room.id}`}
+            editLink={`${baseRoute}/edit?roomId=${room.id}`}
+            detailLink={`${baseRoute}/${room.id}`}
           />
         )
       })}
-      {/*add ListElementEmpty if rooms length is zero*/}
+      {/*device ListElementEmpty if rooms length is zero*/}
       {rooms.length === 0 && (
         <ListElementEmpty
           header="No rooms yet"
           subheader="Add a room to get started"
         />
       )}
-      {/*  Create add button that is centered*/}
-      <Link
-        href={`configuration/room/edit?placeId=${place.id}`}
-        className="flex justify-center px-1"
-      >
+      {/*  Create device button that is centered*/}
+      <Link href={`${baseRoute}/edit`} className="flex justify-center px-1">
         <button className="submit-button">New Room</button>
       </Link>
     </div>

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,8 +6,6 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
-// Next Auth Config
 
 model Account {
   id                String  @id @default(cuid())
@@ -25,10 +20,10 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId], map: "Account_userId_fkey")
 }
 
 model Session {
@@ -36,23 +31,25 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken  String   @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Session_userId_fkey")
 }
 
 model User {
-  id                  String                @id @default(cuid())
-  name                String?
-  email               String?               @unique
-  emailVerified       DateTime?
-  image               String?
-  createdAt            DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  password      String
-  accounts            Account[]
-  sessions            Session[]
+  id                   String                @id @default(cuid())
+  name                 String?
+  email                String?               @unique
+  emailVerified        DateTime?
+  image                String?
+  createdAt            DateTime              @default(now())
+  password             String
+  updatedAt            DateTime              @updatedAt
+  accounts             Account[]
+  sessions             Session[]
   userPlaceConnections UserPlaceConnection[]
 }
 
@@ -64,17 +61,15 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// EnCal Config
-
 model Place {
-  id                  String                @id @default(cuid())
-  name                String
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  basePrice           Int
-  kwhPrice            Int
-  rooms                Room[]
+  id                   String                @id @default(cuid())
+  name                 String
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  basePrice            Int
+  kwhPrice             Int
   placeMeasurements    PlaceMeasurement[]
+  rooms                Room[]
   userPlaceConnections UserPlaceConnection[]
 }
 
@@ -83,38 +78,47 @@ model Room {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  place     Place    @relation(fields: [placeId], references: [id])
   placeId   String
-  devices    Device[]
+  place     Place    @relation(fields: [placeId], references: [id])
+  devices   Device[]
+
+  @@index([placeId], map: "Room_placeId_fkey")
 }
 
 model Device {
-  id                String              @id @default(cuid())
-  name              String
-  deviceType        String
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  room              Room                @relation(fields: [roomId], references: [id])
-  roomId            String
+  id                 String              @id @default(cuid())
+  name               String
+  deviceType         String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  roomId             String
+  serialNumber       String?
+  room               Room                @relation(fields: [roomId], references: [id])
   deviceMeasurements DeviceMeasurement[]
+
+  @@index([roomId], map: "Device_roomId_fkey")
 }
 
 model DeviceMeasurement {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  device    Device   @relation(fields: [deviceId], references: [id])
   deviceId  String
   value     Float
+  device    Device   @relation(fields: [deviceId], references: [id])
+
+  @@index([deviceId], map: "DeviceMeasurement_deviceId_fkey")
 }
 
 model PlaceMeasurement {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  place     Place    @relation(fields: [placeId], references: [id])
   placeId   String
   value     Float
+  place     Place    @relation(fields: [placeId], references: [id])
+
+  @@index([placeId], map: "PlaceMeasurement_placeId_fkey")
 }
 
 model UserPlaceConnection {
@@ -122,8 +126,11 @@ model UserPlaceConnection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isOwner   Boolean
-  user      User     @relation(fields: [userId], references: [email])
   userId    String
-  place     Place    @relation(fields: [placeId], references: [id])
   placeId   String
+  place     Place    @relation(fields: [placeId], references: [id])
+  user      User     @relation(fields: [userId], references: [email])
+
+  @@index([placeId], map: "UserPlaceConnection_placeId_fkey")
+  @@index([userId], map: "UserPlaceConnection_userId_fkey")
 }

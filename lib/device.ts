@@ -23,12 +23,13 @@ export async function getDeviceById(deviceId: string): Promise<Device> {
 
 export async function updateDevice(
   deviceId: string,
-  { name }: { name: string }
+  { name, serialNumber }: { name: string; serialNumber?: string }
 ): Promise<Device> {
   const device: Device = await prisma.device.update({
     where: { id: deviceId },
     data: {
       name,
+      serialNumber,
     },
   })
 
@@ -46,10 +47,11 @@ export async function deleteDevice(deviceId: string): Promise<Device> {
 export async function createDevice(
   name: string,
   roomId: string,
-  type: string
+  type: string,
+  serialNumber?: string
 ): Promise<Device> {
   const device: Device = await prisma.device.create({
-    data: { name, roomId, deviceType: type },
+    data: { name, roomId, deviceType: type, serialNumber },
   })
   return device
 }
@@ -64,6 +66,9 @@ export async function getDeviceTypes(): Promise<string[]> {
     'tv',
     'ac',
     'heater',
+    'iron',
+    'gaming console',
+    'router',
     'curtain',
     'door',
     'window',
@@ -79,7 +84,6 @@ export async function getDeviceTypes(): Promise<string[]> {
     'dishwasher',
     'washer',
     'dryer',
-    'robot',
     'air purifier',
     'water purifier',
     'water heater',

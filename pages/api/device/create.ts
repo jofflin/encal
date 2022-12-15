@@ -20,7 +20,13 @@ async function handlePOST(res: NextApiResponse, req: NextApiRequest) {
     name,
     roomId,
     deviceType,
-  }: { name: string; deviceType: string; roomId: string } = req.body
+    serialNumber,
+  }: {
+    name: string
+    deviceType: string
+    roomId: string
+    serialNumber?: string
+  } = req.body
   if (!name || !roomId || !deviceType) {
     res
       .status(400)
@@ -28,6 +34,6 @@ async function handlePOST(res: NextApiResponse, req: NextApiRequest) {
     return
   }
 
-  const device = await createDevice(name, roomId, deviceType)
+  const device = await createDevice(name, roomId, deviceType, serialNumber)
   res.json(device)
 }

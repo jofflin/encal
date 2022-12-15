@@ -10,6 +10,7 @@ import Link from 'next/link'
 type Props = {
   device?: Device
   roomId: string
+  placeId: string
   deviceTypes: string[]
 }
 
@@ -17,6 +18,7 @@ export default function ConfigureDevice({
   device,
   roomId,
   deviceTypes,
+  placeId,
 }: Props) {
   //  create or update place
   const router = useRouter()
@@ -27,6 +29,7 @@ export default function ConfigureDevice({
     watch,
     formState: { errors, isSubmitting },
   } = useForm()
+  const baseRoute = `/configuration/${placeId}/${roomId}`
 
   const session = useSession()
   if (!session) {
@@ -52,7 +55,7 @@ export default function ConfigureDevice({
         }).then((res) => res.json())
       }
       logger.debug(`res`, res)
-      router.push(`/configuration/device/${res.id}`)
+      router.push(`${baseRoute}/${res.id}`)
     } catch (error) {
       console.error(error)
     }
@@ -96,6 +99,19 @@ export default function ConfigureDevice({
               <p className="error-text">This field is required</p>
             )}
           </div>
+          <div className="form-section">
+            <label className="input-label">Serial Number</label>
+            <input
+              className="input-field"
+              type="text"
+              placeholder="Serial Number"
+              {...register('serialNumber', { required: false })}
+              defaultValue={device?.serialNumber}
+            />
+            {errors.serialNumber && (
+              <p className="error-text">This field is required</p>
+            )}
+          </div>
           <button
             className="submit-button"
             type="submit"
@@ -104,7 +120,7 @@ export default function ConfigureDevice({
             {isSubmitting ? 'Loading...' : 'Submit'}
           </button>
           {/* Create cancel link with href*/}
-          <Link href={`/configuration/room/${roomId}`}>
+          <Link href={baseRoute}>
             <button className="cancel-button" disabled={isSubmitting}>
               Cancel
             </button>

@@ -46,7 +46,7 @@ export default function ConfigurePlace({ place }: Props) {
         }).then((res) => res.json())
       }
       logger.debug(`res`, res)
-      router.push(`/configuration/place/${res.id}`)
+      router.push(`/configuration/${res.id}`)
     } catch (error) {
       console.error(error)
     }
