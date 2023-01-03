@@ -26,6 +26,7 @@ export default async function PlaceDetails({ params }: Props) {
 
   return (
     <div>
+      {/*<PageHeading backLink={'/'} title={`Place: ${place.name}`} />*/}
       {/*Create heading with title*/}
       <PageHeading title={place.name} backLink="/configuration" />
       {rooms.map((room, index) => {
@@ -34,7 +35,7 @@ export default async function PlaceDetails({ params }: Props) {
             key={index}
             header={room.name}
             subheader={amounts[index] + ' devices'}
-            note={'TODO Percent'}
+            note={`all registered`}
             editLink={`${baseRoute}/edit?roomId=${room.id}`}
             detailLink={`${baseRoute}/${room.id}`}
           />

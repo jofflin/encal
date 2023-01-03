@@ -62,6 +62,7 @@ export default function ConfigureDevice({
   }
 
   // return page with heading and form inside a card
+  // @ts-ignore
   return (
     <div className="centered-card">
       <div className="centered-card-content">
@@ -101,12 +102,13 @@ export default function ConfigureDevice({
           </div>
           <div className="form-section">
             <label className="input-label">Serial Number</label>
+
             <input
               className="input-field"
               type="text"
               placeholder="Serial Number"
               {...register('serialNumber', { required: false })}
-              defaultValue={device?.serialNumber}
+              defaultValue={device?.serialNumber || ''}
             />
             {errors.serialNumber && (
               <p className="error-text">This field is required</p>

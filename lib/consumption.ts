@@ -4,8 +4,10 @@ import {
   getDevicesForRoom,
 } from '@lib/device'
 import prisma from '@lib/prisma'
-import { ChartData } from 'chart.js'
+import { ChartData, ScaleChartOptions } from 'chart.js'
 import { getPlaceById } from '@lib/place'
+import { getRoomById } from '@lib/room'
+import { DeepPartial } from 'react-hook-form'
 
 export type RoomConsumption = {
   roomId: string
@@ -80,7 +82,9 @@ export async function getDeviceConsumption(deviceId: string): Promise<{
       consumption.day1 = dayConsumption
       consumption.day1Labels = dayConsumption.map((_, i) => `${i}:00`)
     }
-    const date = new Date(new Date().getTime() - i * 24 * 60 * 60 * 1000)
+    const date = new Date(
+      new Date().getTime() - 7 * 24 * 60 * 60 * 1000 + i * 24 * 60 * 60 * 1000
+    )
     const daySum = dayConsumption.reduce((acc, curr) => {
       return acc + curr
     })
@@ -98,14 +102,19 @@ export async function getRoomConsumption(roomId: string): Promise<{
     days: number[]
     day1: number[]
   }[]
+  kwhPrice: number
+  basePrice: number
   day1Labels: string[]
   daysLabels: string[]
+  roomLabel: string
   roomId: string
   day1: number[]
   days: number[]
 }> {
   // get all devices in room
   const devices = await getDevicesForRoom(roomId)
+  const room = await getRoomById(roomId)
+  const place = await getPlaceById(room.placeId)
   const consumption: {
     daysAmount: number
     devices: {
@@ -114,9 +123,12 @@ export async function getRoomConsumption(roomId: string): Promise<{
       days: number[]
       day1: number[]
     }[]
+    kwhPrice: number
+    basePrice: number
     day1Labels: string[]
     daysLabels: string[]
     roomId: string
+    roomLabel: string
     day1: number[]
     days: number[]
   } = {
@@ -127,9 +139,12 @@ export async function getRoomConsumption(roomId: string): Promise<{
       days: [],
       day1: [],
     })),
+    kwhPrice: place.kwhPrice,
+    basePrice: place.basePrice,
     day1Labels: [],
     daysLabels: [],
     roomId,
+    roomLabel: room.name,
     day1: Array(24).fill(0),
     days: Array(7).fill(0),
   }
@@ -169,6 +184,8 @@ export async function getPlaceConsumptions(placeId: string): Promise<{
       day1: number[]
     }[]
   }[]
+  kwhPrice: number
+  basePrice: number
   placeName: string
   day1Labels: string[]
   daysLabels: string[]
@@ -197,6 +214,8 @@ export async function getPlaceConsumptions(placeId: string): Promise<{
         day1: number[]
       }[]
     }[]
+    kwhPrice: number
+    basePrice: number
     placeName: string
     day1Labels: string[]
     daysLabels: string[]
@@ -212,6 +231,8 @@ export async function getPlaceConsumptions(placeId: string): Promise<{
       day1: [],
       devices: [],
     })),
+    kwhPrice: place.kwhPrice,
+    basePrice: place.basePrice,
     placeName: place.name,
     day1Labels: [],
     daysLabels: [],
@@ -256,25 +277,60 @@ export function mapPlaceConsumptionToChartData(data: {
       day1: number[]
     }[]
   }[]
+  kwhPrice: number
+  basePrice: number
   placeName: string
   day1Labels: string[]
   daysLabels: string[]
   placeId: string
   day1: number[]
   days: number[]
-}): { data: ChartData; header: string; subheader: string; link: string } {
+}): {
+  data: ChartData
+  header: string
+  subheader: string
+  priceText: string
+  link: string
+  options: DeepPartial<ScaleChartOptions>
+} {
+  // calculate sum of all rooms
+  const sum = data.days.reduce((acc, curr) => {
+    return acc + curr
+  })
+  // calculate price with sum, kwh price as cents in euro and cents
+  const price = ((sum * data.kwhPrice) / 100).toFixed(2)
+
+  const priceText = price + '€ + ' + data.basePrice + '€'
   const header = `Consumption for ${data.placeName}`
   const subheader = `Last ${data.daysAmount} days`
   const link = `/${data.placeId}`
   const chartData: ChartData = {
     labels: data.daysLabels,
-    datasets: data.rooms.map((room) => ({
+    datasets: data.rooms.map((room, i) => ({
       label: room.deviceLabel,
       data: room.days,
+      backgroundColor: colors[i],
+      borderColor: colors[i],
       fill: false,
     })),
   }
-  return { data: chartData, header, subheader, link }
+  const options: DeepPartial<ScaleChartOptions> = {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Days',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Kwh',
+        },
+      },
+    },
+  }
+  return { data: chartData, header, subheader, link, options, priceText }
 }
 
 export function mapRoomsConsumptionToChartData(data: {
@@ -291,31 +347,68 @@ export function mapRoomsConsumptionToChartData(data: {
       day1: number[]
     }[]
   }[]
+  kwhPrice: number
+  basePrice: number
   placeName: string
   day1Labels: string[]
   daysLabels: string[]
   placeId: string
   day1: number[]
   days: number[]
-}): { data: ChartData; header: string; subheader: string; link: string }[] {
+}): {
+  data: ChartData
+  header: string
+  subheader: string
+  priceText: string
+  link: string
+  options: DeepPartial<ScaleChartOptions>
+}[] {
   const response: {
     data: ChartData
     header: string
     subheader: string
+    priceText: string
     link: string
+    options: DeepPartial<ScaleChartOptions>
   }[] = []
   data.rooms.forEach((room) => {
     response.push({
       header: `Consumption for ${room.deviceLabel}`,
       subheader: `Last ${data.daysAmount} days`,
       link: `/${data.placeId}/${room.deviceId}`,
+      priceText:
+        (
+          (room.days.reduce((acc, curr) => {
+            return acc + curr
+          }) *
+            data.kwhPrice) /
+          100
+        ).toFixed(2) + '€',
       data: {
         labels: data.daysLabels,
-        datasets: room.devices.map((device) => ({
+        datasets: room.devices.map((device, i) => ({
           label: device.deviceLabel,
           data: device.days,
+          backgroundColor: colors[i],
+          borderColor: colors[i],
           fill: false,
         })),
+      },
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Days',
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Kwh',
+            },
+          },
+        },
       },
     })
   })
@@ -332,83 +425,193 @@ export function mapDevicessConsumptionToChartData(
       days: number[]
       day1: number[]
     }[]
+    kwhPrice: number
+    basePrice: number
     day1Labels: string[]
     daysLabels: string[]
     roomId: string
     day1: number[]
     days: number[]
   }
-): { data: ChartData; header: string; subheader: string; link: string }[] {
+): {
+  data: ChartData
+  header: string
+  subheader: string
+  link: string
+  priceText: string
+  options: DeepPartial<ScaleChartOptions>
+}[] {
   const response: {
     data: ChartData
     header: string
     subheader: string
+    priceText: string
     link: string
+    options: DeepPartial<ScaleChartOptions>
   }[] = []
-  data.devices.forEach((device) => {
+  data.devices.forEach((device, i) => {
     response.push({
       header: `Consumption for ${device.deviceLabel}`,
       subheader: `Last 24 hours`,
       link: `/${baselink}/${device.deviceId}`,
+      priceText:
+        (
+          (device.day1.reduce((acc, curr) => {
+            return acc + curr
+          }) *
+            data.kwhPrice) /
+          100
+        ).toFixed(2) + '€',
       data: {
         labels: data.day1Labels,
         datasets: [
           {
             label: device.deviceLabel,
             data: device.day1,
+            backgroundColor: colors[i],
+            borderColor: colors[i],
             fill: false,
           },
         ],
+      },
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Days',
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Kwh',
+            },
+          },
+        },
       },
     })
   })
   return response
 }
 
-export function mapDeviceConsumptionToChartData(data: {
-  daysAmount: number
-  day1: number[]
-  days: number[]
-  daysLabels: string[]
-  day1Labels: string[]
-  deviceLabel: string
-}): { data: ChartData; header: string; subheader: string; link: string }[] {
+export function mapDeviceConsumptionToChartData(
+  data: {
+    daysAmount: number
+    day1: number[]
+    days: number[]
+    daysLabels: string[]
+    day1Labels: string[]
+    deviceLabel: string
+  },
+  kwhPrice: number
+): {
+  data: ChartData
+  header: string
+  subheader: string
+  priceText: string
+  link: string
+  options: DeepPartial<ScaleChartOptions>
+}[] {
   const response: {
     data: ChartData
     header: string
     subheader: string
+    priceText: string
     link: string
+    options: DeepPartial<ScaleChartOptions>
   }[] = [
     {
       header: `Consumption for ${data.deviceLabel}`,
       subheader: `Last 24 hours`,
       link: ``,
+      priceText:
+        (
+          (data.day1.reduce((acc, curr) => {
+            return acc + curr
+          }) *
+            kwhPrice) /
+          100
+        ).toFixed(2) + '€',
       data: {
         labels: data.day1Labels,
         datasets: [
           {
             label: data.deviceLabel,
             data: data.day1,
+            backgroundColor: colors[0],
+            borderColor: colors[0],
             fill: false,
           },
         ],
+      },
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Hours',
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Kwh',
+            },
+          },
+        },
       },
     },
     {
       header: `Consumption for ${data.deviceLabel}`,
       subheader: `Last ${data.daysAmount} days`,
       link: ``,
+      priceText:
+        (
+          (data.days.reduce((acc, curr) => {
+            return acc + curr
+          }) *
+            kwhPrice) /
+          100
+        ).toFixed(2) + '€',
       data: {
         labels: data.daysLabels,
         datasets: [
           {
             label: data.deviceLabel,
             data: data.days,
+            backgroundColor: colors[0],
+            borderColor: colors[0],
             fill: false,
           },
         ],
+      },
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Days',
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Kwh',
+            },
+          },
+        },
       },
     },
   ]
   return response
 }
+
+const colors = [
+  '#99f6e4',
+  '#2dd4bf',
+  '#0d9488',
+  '#115e59',
+  '#134e4a',
+  '#ccfbf1',
+]

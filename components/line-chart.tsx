@@ -6,30 +6,39 @@ import {
   CategoryScale,
   Chart as ChartJS,
   ChartData,
-  Colors,
   Legend,
   LinearScale,
   LineElement,
   PointElement,
+  ScaleChartOptions,
   Title,
   Tooltip,
 } from 'chart.js'
+import { DeepPartial } from 'react-hook-form'
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
-  Colors,
   Title,
   Tooltip,
   Legend
 )
 type Props = {
   data: ChartData
+  options: DeepPartial<ScaleChartOptions>
 }
 
-export default function LineChart({ data }: Props) {
+export default function LineChart({ data, options }: Props) {
   // @ts-ignore
-  return <Line datasetIdKey="0" data={data} height="40vh" width="80vw" />;
+  return (
+    <Line
+      datasetIdKey="0"
+      data={data}
+      options={options}
+      height="40vh"
+      width="80vw"
+    />
+  )
 }

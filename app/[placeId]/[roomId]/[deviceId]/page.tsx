@@ -3,6 +3,8 @@ import {
   mapDeviceConsumptionToChartData,
 } from '@lib/consumption'
 import ChartCard from '@components/chart-card'
+import PageHeading from '@components/page-heading'
+import { getPlaceById } from '@lib/place'
 
 type Props = {
   params: {
@@ -14,10 +16,15 @@ type Props = {
 
 export default async function DeviceCalculation({ params }: Props) {
   const data = await getDeviceConsumption(params.deviceId)
-  const chartdata = mapDeviceConsumptionToChartData(data)
+  const place = await getPlaceById(params.placeId)
+  const chartdata = mapDeviceConsumptionToChartData(data, place.kwhPrice)
 
   return (
     <div>
+      <PageHeading
+        title={`${data.deviceLabel} Consumption`}
+        backLink={`/${params.placeId}/${params.roomId}`}
+      />
       {chartdata.map((d, i) => {
         return (
           <ChartCard
@@ -26,6 +33,8 @@ export default async function DeviceCalculation({ params }: Props) {
             subheader={d.subheader}
             detailLink={d.link}
             data={d.data}
+            priceText={d.priceText}
+            options={d.options}
           />
         )
       })}

@@ -6,7 +6,7 @@ type Props = {
   subheader: string
   note: string
   editLink: string
-  detailLink: string
+  detailLink?: string
 }
 
 export default function ListElement({
@@ -33,9 +33,11 @@ export default function ListElement({
           <Link href={editLink}>
             <BiEditAlt className="h-8 w-8 justify-center" />
           </Link>
-          <Link href={detailLink}>
-            <BiChevronRight className="h-8 w-8 justify-center" />
-          </Link>
+          {detailLink && (
+            <Link href={detailLink}>
+              <BiChevronRight className="h-8 w-8 justify-center" />
+            </Link>
+          )}
         </div>
       </div>
     </div>

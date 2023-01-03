@@ -30,10 +30,10 @@ export default async function RoomDetails({ params }: Props) {
           <ListElement
             key={index}
             header={device.name}
-            subheader={'TODO Consumption'}
-            note={'TODO Percent'}
+            subheader={`registered since:`}
+            note={device.createdAt.toLocaleDateString()}
             editLink={`${defaultRoute}/edit?deviceId=${device.id}`}
-            detailLink={`${defaultRoute}/${device.id}`}
+            // detailLink={`${defaultRoute}/${device.id}`}
           />
         )
       })}
