@@ -10,7 +10,7 @@ export default async function Header() {
   }
 
   return (
-    <header className="flex items-center justify-between bg-teal-800 p-4 text-gray-100 ">
+    <header className="fixed top-0 w-full flex items-center justify-between bg-teal-800 p-4 text-gray-100 ">
       <h1 className="text-3xl font-light">Hi {session?.user?.name}</h1>
       <div className="flex items-center">
         <BiHome className="h-8 w-8" />

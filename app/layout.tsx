@@ -21,10 +21,12 @@ export default async function RootLayout({
       <head />
       <body>
         <Providers session={session}>
+          <div className="mt-20"/>
           <Header />
 
           {children}
           <Navigation />
+          <div className="mb-20"></div>
         </Providers>
       </body>
     </html>
