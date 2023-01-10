@@ -19,6 +19,28 @@ export default async function DeviceCalculation({ params }: Props) {
   const place = await getPlaceById(params.placeId)
   const chartdata = mapDeviceConsumptionToChartData(data, place.kwhPrice)
 
+  // chartdata.forEach((data) => {
+  //   console.log(data.header)
+  //   if (
+  //     data.header === 'Consumption for Dryer' &&
+  //     data.subheader === 'Last 24 hours'
+  //   ) {
+  //     //   change data
+  //     data.priceText = '0.00 €'
+  //     data.data.datasets[0].data = [
+  //       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  //     ]
+  //   }
+  //   if (
+  //     data.header === 'Consumption for Dryer' &&
+  //     data.subheader === 'Last 7 days'
+  //   ) {
+  //     data.priceText = '1.40 €'
+  //     //   change data
+  //     data.data.datasets[0].data = [0, 1, 0, 1, 0, 2, 0]
+  //   }
+  // })
+
   return (
     <div>
       <PageHeading

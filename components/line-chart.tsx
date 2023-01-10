@@ -31,14 +31,8 @@ type Props = {
 }
 
 export default function LineChart({ data, options }: Props) {
-  // @ts-ignore
   return (
-    <Line
-      datasetIdKey="0"
-      data={data}
-      options={options}
-      height="40vh"
-      width="80vw"
-    />
+    // @ts-ignore
+    <Line data={data} options={options} height="40vh" width="80vw" />
   )
 }

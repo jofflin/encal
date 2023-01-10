@@ -9,6 +9,16 @@ export async function getDevicesForRoom(roomId: string): Promise<Device[]> {
   })
 }
 
+export async function findDeviceWithOneTimeCode(
+  oneTimeCode: string
+): Promise<Device | null> {
+  return await prisma.device.findUnique({
+    where: {
+      oneTimeCode,
+    },
+  })
+}
+
 export async function getDeviceById(deviceId: string): Promise<Device> {
   const device: Device | null = await prisma.device.findUnique({
     where: { id: deviceId },
@@ -36,6 +46,23 @@ export async function updateDevice(
   return device
 }
 
+export async function deviceRegistered(
+  deviceId: string
+): Promise<{ registered: boolean }> {
+  const device = await prisma.device.update({
+    where: { id: deviceId },
+    data: {
+      deviceRegistered: true,
+    },
+  })
+
+  if (!device) {
+    throw new Error('Device not found')
+  }
+
+  return { registered: device.deviceRegistered }
+}
+
 export async function deleteDevice(deviceId: string): Promise<Device> {
   const device: Device = await prisma.device.delete({
     where: { id: deviceId },
@@ -50,8 +77,10 @@ export async function createDevice(
   type: string,
   serialNumber?: string
 ): Promise<Device> {
+  const oneTimeCode = Math.random().toString(36).substring(7)
+  const secret = Math.random().toString(36).substring(2, 13)
   const device: Device = await prisma.device.create({
-    data: { name, roomId, deviceType: type, serialNumber },
+    data: { name, roomId, deviceType: type, serialNumber, oneTimeCode, secret },
   })
   return device
 }

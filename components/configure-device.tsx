@@ -55,7 +55,7 @@ export default function ConfigureDevice({
         }).then((res) => res.json())
       }
       logger.debug(`res`, res)
-      router.push(`${baseRoute}/${res.id}`)
+      router.push(baseRoute)
     } catch (error) {
       console.error(error)
     }

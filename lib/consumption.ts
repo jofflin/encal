@@ -452,7 +452,7 @@ export function mapDevicessConsumptionToChartData(
   data.devices.forEach((device, i) => {
     response.push({
       header: `Consumption for ${device.deviceLabel}`,
-      subheader: `Last 24 hours`,
+      subheader: `Last 7 days`,
       link: `/${baselink}/${device.deviceId}`,
       priceText:
         (
@@ -463,11 +463,11 @@ export function mapDevicessConsumptionToChartData(
           100
         ).toFixed(2) + '€',
       data: {
-        labels: data.day1Labels,
+        labels: data.daysLabels,
         datasets: [
           {
             label: device.deviceLabel,
-            data: device.day1,
+            data: device.days,
             backgroundColor: colors[i],
             borderColor: colors[i],
             fill: false,

@@ -30,8 +30,10 @@ export default async function RoomDetails({ params }: Props) {
           <ListElement
             key={index}
             header={device.name}
-            subheader={`registered since:`}
-            note={device.createdAt.toLocaleDateString()}
+            subheader={`Registration Code: ${device.oneTimeCode}`}
+            note={`Status: ${
+              device.deviceRegistered ? 'Registered' : 'Not Registered'
+            }`}
             editLink={`${defaultRoute}/edit?deviceId=${device.id}`}
             // detailLink={`${defaultRoute}/${device.id}`}
           />

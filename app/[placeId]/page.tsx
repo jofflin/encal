@@ -17,6 +17,17 @@ export default async function PlaceCalculation({ params }: Props) {
   const place = await getPlaceById(params.placeId)
   const chartdata = mapRoomsConsumptionToChartData(data)
 
+  // chartdata.forEach((data) => {
+  //   console.log(data.header)
+  //   if (data.header === 'Consumption for Storage Room') {
+  //     data.priceText = '2.80 €'
+  //     //   change data
+  //     data.data.datasets[0].data = [0, 1, 0, 1, 0, 2, 0]
+  //     data.data.datasets[1].data = [0, 2, 0, 0, 0, 1, 1]
+  //   }
+  // })
+  // chartdata = [chartdata[1]]
+
   return (
     <div>
       <PageHeading title={`${place.name} Consumption`} backLink="/" />

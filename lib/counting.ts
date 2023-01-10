@@ -32,6 +32,14 @@ export async function countDevicesForRoom(roomId: string): Promise<number> {
   })
 }
 
+export async function countRegisteredDevicesForRoom(
+  roomId: string
+): Promise<number> {
+  return await prisma.device.count({
+    where: { roomId: roomId, deviceRegistered: true },
+  })
+}
+
 export async function countDevicesAndRoomsForPlace(
   placeId: string
 ): Promise<{ devicesAmount: number; roomsAmount: number }> {

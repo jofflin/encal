@@ -79,8 +79,8 @@ model Room {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   placeId   String
-  place     Place    @relation(fields: [placeId], references: [id])
   devices   Device[]
+  place     Place    @relation(fields: [placeId], references: [id])
 
   @@index([placeId], map: "Room_placeId_fkey")
 }
@@ -93,6 +93,9 @@ model Device {
   updatedAt          DateTime            @updatedAt
   roomId             String
   serialNumber       String?
+  deviceRegistered   Boolean             @default(false)
+  secret             String              @unique(map: "secret")
+  oneTimeCode        String              @unique(map: "oneTimeCode") @db.VarChar(6)
   room               Room                @relation(fields: [roomId], references: [id])
   deviceMeasurements DeviceMeasurement[]
 
@@ -105,6 +108,7 @@ model DeviceMeasurement {
   updatedAt DateTime @updatedAt
   deviceId  String
   value     Float
+  duration  Int      @default(0)
   device    Device   @relation(fields: [deviceId], references: [id])
 
   @@index([deviceId], map: "DeviceMeasurement_deviceId_fkey")
@@ -116,6 +120,8 @@ model PlaceMeasurement {
   updatedAt DateTime @updatedAt
   placeId   String
   value     Float
+  duration  Int      @default(0)
+  costs     Float    @default(0) @db.Float
   place     Place    @relation(fields: [placeId], references: [id])
 
   @@index([placeId], map: "PlaceMeasurement_placeId_fkey")

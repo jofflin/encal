@@ -5,7 +5,10 @@ import { getPlaceById } from '@lib/place'
 import { getRoomsForPlace } from '@lib/room'
 import { Place, Room } from '@prisma/client'
 import ListElementEmpty from '@components/list-element-empty'
-import { countDevicesForRoom } from '@lib/counting'
+import {
+  countDevicesForRoom,
+  countRegisteredDevicesForRoom,
+} from '@lib/counting'
 
 type Props = {
   params: {
@@ -17,17 +20,18 @@ export default async function PlaceDetails({ params }: Props) {
   const rooms: Room[] = await getRoomsForPlace(params.placeId)
   const place: Place = await getPlaceById(params.placeId)
   const amounts: number[] = []
+  const registered: number[] = []
   const baseRoute = `/configuration/${params.placeId}`
 
   for (const room of rooms) {
     const amount = await countDevicesForRoom(room.id)
+    const registeredAmount = await countRegisteredDevicesForRoom(room.id)
+    registered.push(registeredAmount)
     amounts.push(amount)
   }
 
   return (
     <div>
-      {/*<PageHeading backLink={'/'} title={`Place: ${place.name}`} />*/}
-      {/*Create heading with title*/}
       <PageHeading title={place.name} backLink="/configuration" />
       {rooms.map((room, index) => {
         return (
@@ -35,7 +39,7 @@ export default async function PlaceDetails({ params }: Props) {
             key={index}
             header={room.name}
             subheader={amounts[index] + ' devices'}
-            note={`all registered`}
+            note={`${registered[index]} registered`}
             editLink={`${baseRoute}/edit?roomId=${room.id}`}
             detailLink={`${baseRoute}/${room.id}`}
           />

@@ -4,7 +4,6 @@ import {
 } from '@lib/consumption'
 import ChartCard from '@components/chart-card'
 import PageHeading from '@components/page-heading'
-import { getPlaceById } from '@lib/place'
 
 type Props = {
   params: {
@@ -19,8 +18,19 @@ export default async function RoomCalculation({ params }: Props) {
     `${params.placeId}/${params.roomId}`,
     data
   )
-  const place = await getPlaceById(params.placeId)
-  // const
+  // chartdata.forEach((data) => {
+  //   console.log(data.header)
+  //   if (data.header === 'Consumption for Dryer') {
+  //     //   change data
+  //     data.priceText = '1.40 €'
+  //     data.data.datasets[0].data = [0, 1, 0, 1, 0, 2, 0]
+  //   }
+  //   if (data.header === 'Consumption for Washing Machine') {
+  //     data.priceText = '1.40 €'
+  //     //   change data
+  //     data.data.datasets[0].data = [0, 2, 0, 0, 0, 1, 1]
+  //   }
+  // })
 
   return (
     <div>
